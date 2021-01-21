@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import netlifyIdentity from "netlify-identity-widget";
 import theme from "./theme";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+
+window.netlifyIdentity = netlifyIdentity;
+netlifyIdentity.init();
 
 ReactDOM.render(
   <React.StrictMode>

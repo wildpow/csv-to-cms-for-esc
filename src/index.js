@@ -5,7 +5,7 @@ import netlifyIdentity from "netlify-identity-widget";
 import theme from "./theme";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
+import ProvideAuth from "./authCTX";
 window.netlifyIdentity = netlifyIdentity;
 netlifyIdentity.init();
 
@@ -13,7 +13,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <App />
+      <ProvideAuth>
+        <App />
+      </ProvideAuth>
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById("root")

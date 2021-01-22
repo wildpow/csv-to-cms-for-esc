@@ -16,17 +16,20 @@ export default function ProvideAuth({ children }) {
     setUser(user !== null ? user.email : null);
     setIsLoading(false);
   }, []);
-  const signin = () => {
+  const signin = (cb) => {
     netlifyIdentity.open();
     netlifyIdentity.on("login", (user) => {
       setUser(user);
       setIsLoading(true);
+      cb();
+      netlifyIdentity.close();
     });
   };
-  const signout = () => {
+  const signout = (cb) => {
     netlifyIdentity.logout();
     netlifyIdentity.on("logout", () => {
       setUser(null);
+      cb();
     });
   };
   return (

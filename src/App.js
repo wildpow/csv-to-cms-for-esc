@@ -1,7 +1,6 @@
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
   Link,
   useHistory,
   useLocation,
@@ -17,23 +16,13 @@ export default function App() {
 
         <ul>
           <li>
-            <Link to="/public">Public Page</Link>
-          </li>
-          <li>
-            <Link to="/protected">Protected Page</Link>
+            <Link to="/">Home</Link>
           </li>
         </ul>
 
         <Switch>
-          <Route path="/public">
-            <PublicPage />
-          </Route>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <PrivateRoute path="/protected">
-            <ProtectedPage />
-          </PrivateRoute>
+          <PrivateRoute path="/" component={PublicPage} exact />
+          <PrivateRoute loggedIn path="/login" component={LoginPage} exact />
         </Switch>
       </div>
     </Router>
@@ -44,10 +33,6 @@ function PublicPage() {
   return <h3>Public</h3>;
 }
 
-function ProtectedPage() {
-  return <h3>Protected</h3>;
-}
-
 function LoginPage() {
   let history = useHistory();
   let location = useLocation();
@@ -56,7 +41,8 @@ function LoginPage() {
   let { from } = location.state || { from: { pathname: "/" } };
   let login = () => {
     auth.signin(() => {
-      history.replace(from);
+      history.replace("/");
+      // history.push("/");
     });
   };
 

@@ -9,7 +9,7 @@ export const AuthButton = () => {
       Welcome!{" "}
       <button
         onClick={() => {
-          auth.signout(() => history.push("/"));
+          auth.signout(() => history.push("/login"));
         }}
       >
         Sign out
@@ -20,27 +20,33 @@ export const AuthButton = () => {
   );
 };
 
-export const PrivateRoute = ({ children, ...rest }) => {
+export const PrivateRoute = ({ component: Component, loggedIn, ...rest }) => {
   let auth = useAuth();
-  return (
-    <>
-      {!auth.isLoading && (
-        <Route
-          {...rest}
-          render={({ location }) =>
-            auth.user ? (
-              children
-            ) : (
-              <Redirect
-                to={{
-                  pathname: "/login",
-                  state: { from: location },
-                }}
-              />
-            )
-          }
-        />
-      )}
-    </>
-  );
+  if (loggedIn) {
+    return (
+      <>
+        {!auth.isLoading && (
+          <Route
+            {...rest}
+            render={(props) =>
+              auth.user ? <Redirect to="/" /> : <Component {...props} />
+            }
+          />
+        )}
+      </>
+    );
+  } else {
+    return (
+      <>
+        {!auth.isLoading && (
+          <Route
+            {...rest}
+            render={(props) =>
+              auth.user ? <Component {...props} /> : <Redirect to="/login" />
+            }
+          />
+        )}
+      </>
+    );
+  }
 };

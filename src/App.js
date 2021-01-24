@@ -1,34 +1,62 @@
 import {
   BrowserRouter as Router,
   Switch,
-  Link,
+  Link as RouterLink,
   useHistory,
   useLocation,
+  Route,
 } from "react-router-dom";
+import { Box, Flex, Link, Center, Button } from "@chakra-ui/react";
 import { useAuth } from "./authCTX";
-import { PrivateRoute, AuthButton } from "./components/auth";
+import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
 
 export default function App() {
   return (
     <Router>
       <div>
-        <AuthButton />
-
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-        </ul>
-
-        <Switch>
-          <PrivateRoute path="/" component={PublicPage} exact />
-          <PrivateRoute loggedIn path="/login" component={LoginPage} exact />
-        </Switch>
+        <Box
+          as="nav"
+          w="100%"
+          bg="blue.800"
+          pt="10px"
+          pb="10px"
+          boxShadow="base"
+        >
+          <Flex
+            maxW="1200px"
+            justifyContent="space-between"
+            m="0 auto"
+            alignItems="center"
+          >
+            <Button
+              as={RouterLink}
+              to="/"
+              color="white"
+              variant="ghost"
+              _hover={{ color: "gray.900", bg: "white" }}
+            >
+              <h1>CSV to CMS</h1>
+            </Button>
+            <AuthMessage />
+            <AuthButton />
+          </Flex>
+        </Box>
+        <Box maxW="1200px" m="0 auto" pt="20px">
+          <Center border="1px" borderRadius="base" boxShadow="base">
+            <Switch>
+              <PrivateRoute path="/" component={PublicPage} exact />
+              <PrivateRoute loggedIn path="/login" component={LoginPage} />
+              <Route component={ErrorPage} />
+            </Switch>
+          </Center>
+        </Box>
       </div>
     </Router>
   );
 }
-
+function ErrorPage() {
+  return <h1>Error Page not working</h1>;
+}
 function PublicPage() {
   return <h3>Public</h3>;
 }
@@ -41,8 +69,8 @@ function LoginPage() {
   let { from } = location.state || { from: { pathname: "/" } };
   let login = () => {
     auth.signin(() => {
-      history.replace("/");
-      // history.push("/");
+      history.replace(from);
+      history.push(from);
     });
   };
 

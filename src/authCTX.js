@@ -19,10 +19,10 @@ export default function ProvideAuth({ children }) {
   const signin = (cb) => {
     netlifyIdentity.open();
     netlifyIdentity.on("login", (user) => {
-      setUser(user);
-      setIsLoading(true);
-      cb();
+      setUser(user.email);
+      setIsLoading(false);
       netlifyIdentity.close();
+      cb();
     });
   };
   const signout = (cb) => {

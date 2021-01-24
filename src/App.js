@@ -6,7 +6,18 @@ import {
   useLocation,
   Route,
 } from "react-router-dom";
-import { Box, Flex, Link, Center, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Link,
+  Center,
+  Button,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "@chakra-ui/react";
 import { useAuth } from "./authCTX";
 import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
 
@@ -58,7 +69,26 @@ function ErrorPage() {
   return <h1>Error Page not working</h1>;
 }
 function PublicPage() {
-  return <h3>Public</h3>;
+  return (
+    <div>
+      <Tabs>
+        <TabList>
+          <Tab>DownLoad</Tab>
+          <Tab>Upload</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            DownLoad now!
+            <Button>All Products</Button>
+            <Button>just mattresses</Button>
+            <Button> Just Adjustables</Button>
+            <Button>Just Acessories</Button>
+          </TabPanel>
+          <TabPanel>Upload now!</TabPanel>
+        </TabPanels>
+      </Tabs>
+    </div>
+  );
 }
 
 function LoginPage() {

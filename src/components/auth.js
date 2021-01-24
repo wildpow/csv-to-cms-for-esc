@@ -1,5 +1,5 @@
 import { Route, Redirect, useHistory, useLocation } from "react-router-dom";
-import { Box, Flex, Link, Center, Button, Text } from "@chakra-ui/react";
+import { Button, Text } from "@chakra-ui/react";
 import { useAuth } from "../authCTX";
 
 export const AuthButton = () => {

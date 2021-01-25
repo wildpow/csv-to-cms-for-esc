@@ -3,7 +3,7 @@ export async function handler(event, context) {
     console.log("queryStringParameters", event.queryStringParameters);
     return {
       statusCode: 200,
-      body: JSON.stringify({ msg: "Hello, World!" }),
+      body: JSON.stringify({ msg: "Hello, World! DUDE!!!!" }),
     };
   } catch (err) {
     console.log(err);

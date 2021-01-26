@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "./authCTX";
 import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
+import Admin from "./admin";
 
 export default function App() {
   return (
@@ -54,7 +55,7 @@ export default function App() {
         <Box maxW="1200px" m="0 auto" pt="20px">
           <Center border="1px" borderRadius="base" boxShadow="base">
             <Switch>
-              <PrivateRoute path="/" component={PublicPage} exact />
+              <PrivateRoute path="/" component={Admin} exact />
               <PrivateRoute loggedIn path="/login" component={LoginPage} />
               <Route component={ErrorPage} />
             </Switch>
@@ -66,28 +67,6 @@ export default function App() {
 }
 function ErrorPage() {
   return <h1>Error Page not working</h1>;
-}
-function PublicPage() {
-  return (
-    <div>
-      <Tabs>
-        <TabList>
-          <Tab>DownLoad</Tab>
-          <Tab>Upload</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            DownLoad now!
-            <Button>All Products</Button>
-            <Button>just mattresses</Button>
-            <Button> Just Adjustables</Button>
-            <Button>Just Acessories</Button>
-          </TabPanel>
-          <TabPanel>Upload now!</TabPanel>
-        </TabPanels>
-      </Tabs>
-    </div>
-  );
 }
 
 function LoginPage() {

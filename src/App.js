@@ -6,17 +6,7 @@ import {
   useLocation,
   Route,
 } from "react-router-dom";
-import {
-  Box,
-  Flex,
-  Center,
-  Button,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-} from "@chakra-ui/react";
+import { Box, Flex, Center, Button } from "@chakra-ui/react";
 import { useAuth } from "./authCTX";
 import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
 import Admin from "./admin";

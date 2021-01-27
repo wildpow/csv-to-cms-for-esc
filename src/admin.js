@@ -1,22 +1,17 @@
 import { useState } from "react";
 import {
   Box,
-  Flex,
-  Center,
   Button,
   Tabs,
   TabList,
   Tab,
   TabPanels,
-  FormControl,
-  FormLabel,
   TabPanel,
   Container,
-  Input,
 } from "@chakra-ui/react";
-import { DownloadIcon, ExternalLinkIcon, RepeatIcon } from "@chakra-ui/icons";
+import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
 import { SiteClient } from "datocms-client";
-
+import FileUploader from "./components/fileUploader";
 import { downloadMatts } from "./downloadData";
 import PapaParse from "papaparse";
 const client = new SiteClient(process.env.REACT_APP_DATO);
@@ -46,24 +41,16 @@ export default function Admin() {
     });
     setMatts(stuff);
   }
-  const fileUpload = (e) => {
+  const fileUpload = (file) => {
     let reader = new FileReader();
-    const file = e.target.files[0];
     reader.onload = function (event) {
-      // The file's text will be printed here
       const csvData = PapaParse.parse(reader.result, { header: true });
-      // console.log(event.target.result);
       setNewMatts(csvData.data);
     };
-    // reader.onload = (e) => {
-    //   const csvData = PapaParse(reader.result);
-    //   console.log(csvData);
-    // };
     reader.readAsText(file);
   };
   const updateMatts = () => {
     newMatts.forEach((matt) => {
-      // console.log(matt["Sale Banner"], matt.ID);
       client.items
         .update(matt.ID, {
           saleBanner: matt["Sale Banner"],
@@ -73,7 +60,6 @@ export default function Admin() {
             .publish(item.id)
             .then((item) => console.log(item))
             .catch((error) => console.log(error));
-          // console.log(item);
         })
         .catch((error) => {
           console.log(error);
@@ -81,12 +67,40 @@ export default function Admin() {
     });
     console.log(newMatts);
   };
+  const TestFilterDiff = () => {
+    // const results = matts.filter(
+    //   ({ id: id1, saleBanner: saleBanner1 }) =>
+    //     !newMatts.some(
+    //       ({ ID: id2, "Sale Banner": saleBanner2 }) =>
+    //         id2 === id1 && saleBanner1 !== saleBanner2
+    //     )
+    // );
+    const results2 = newMatts.filter(
+      ({ ID: id1, "Sale Banner": saleBanner1 }) =>
+        matts.some(
+          ({ id: id2, saleBanner: saleBanner2 }) =>
+            id2 === id1 && saleBanner1 !== saleBanner2
+        )
+    );
+    console.log(results2);
+  };
   return (
-    <Container maxW="xl" centerContent>
-      <Tabs>
+    <Container
+      maxW="xl"
+      centerContent
+      border="1px"
+      borderColor="gray.300"
+      borderRadius="base"
+      boxShadow="md"
+      mt="10"
+    >
+      <Button onClick={() => TestFilterDiff()}>
+        Test filtering data from CMS and uploading CSV
+      </Button>
+      <Tabs w="100%" minH="350px" p="2">
         <TabList>
-          <Tab>DownLoad</Tab>
-          <Tab>Upload</Tab>
+          <Tab fontSize="xl">DownLoad</Tab>
+          <Tab fontSize="xl">Upload</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -94,11 +108,12 @@ export default function Admin() {
               {matts ? (
                 <Button
                   size="lg"
+                  variant="outline"
                   onClick={() => {
                     console.log(matts);
                     downloadMatts(
                       { id: "ID", name: "Name", saleBanner: "Sale Banner" },
-                      matts,
+                      [...matts],
                       "matts"
                     );
                   }}
@@ -120,23 +135,10 @@ export default function Admin() {
             </Box>
           </TabPanel>
           <TabPanel>
-            Upload now!
             {newMatts ? (
               <Button onClick={updateMatts}>Send Updates</Button>
             ) : (
-              <FormControl>
-                <FormLabel>
-                  Upload
-                  <Input
-                    type="file"
-                    onChange={fileUpload}
-                    accept=".csv"
-                    placeholder="large size"
-                    size="lg"
-                    variant="filled"
-                  />
-                </FormLabel>
-              </FormControl>
+              <FileUploader handleFile={fileUpload} />
             )}
           </TabPanel>
         </TabPanels>

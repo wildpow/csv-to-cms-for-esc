@@ -43,7 +43,7 @@ export default function App() {
           </Flex>
         </Box>
         <Box maxW="1200px" m="0 auto" pt="20px">
-          <Center border="1px" borderRadius="base" boxShadow="base">
+          <Center>
             <Switch>
               <PrivateRoute path="/" component={Admin} exact />
               <PrivateRoute loggedIn path="/login" component={LoginPage} />

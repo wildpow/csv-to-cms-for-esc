@@ -8,8 +8,16 @@ import {
   TabPanels,
   TabPanel,
   Container,
+  useToast,
+  Flex,
 } from "@chakra-ui/react";
-import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
+
+import {
+  DownloadIcon,
+  RepeatIcon,
+  CloseIcon,
+  Search2Icon,
+} from "@chakra-ui/icons";
 import { SiteClient } from "datocms-client";
 import FileUploader from "./components/fileUploader";
 import { downloadMatts } from "./downloadData";
@@ -17,6 +25,7 @@ import PapaParse from "papaparse";
 const client = new SiteClient(process.env.REACT_APP_DATO);
 
 export default function Admin() {
+  const toast = useToast();
   const [matts, setMatts] = useState(null);
   const [loadingMatt, setLoadingMatts] = useState(false);
   const [newMatts, setNewMatts] = useState(null);
@@ -39,15 +48,26 @@ export default function Admin() {
         saleBanner: element.saleBanner,
       });
     });
+    toast({
+      title: "Products Generated",
+      description: "Updated list of proucts have been created. Please Download",
+      status: "success",
+      duration: 6000,
+      isClosable: true,
+    });
     setMatts(stuff);
   }
   const fileUpload = (file) => {
-    let reader = new FileReader();
-    reader.onload = function (event) {
-      const csvData = PapaParse.parse(reader.result, { header: true });
-      setNewMatts(csvData.data);
-    };
-    reader.readAsText(file);
+    if (file) {
+      let reader = new FileReader();
+      reader.onload = function (event) {
+        const csvData = PapaParse.parse(reader.result, { header: true });
+        setNewMatts(csvData.data);
+      };
+      reader.readAsText(file);
+    } else {
+      setNewMatts(null);
+    }
   };
   const updateMatts = () => {
     newMatts.forEach((matt) => {
@@ -67,23 +87,7 @@ export default function Admin() {
     });
     console.log(newMatts);
   };
-  const TestFilterDiff = () => {
-    // const results = matts.filter(
-    //   ({ id: id1, saleBanner: saleBanner1 }) =>
-    //     !newMatts.some(
-    //       ({ ID: id2, "Sale Banner": saleBanner2 }) =>
-    //         id2 === id1 && saleBanner1 !== saleBanner2
-    //     )
-    // );
-    const results2 = newMatts.filter(
-      ({ ID: id1, "Sale Banner": saleBanner1 }) =>
-        matts.some(
-          ({ id: id2, saleBanner: saleBanner2 }) =>
-            id2 === id1 && saleBanner1 !== saleBanner2
-        )
-    );
-    console.log(results2);
-  };
+
   return (
     <Container
       maxW="xl"
@@ -94,9 +98,6 @@ export default function Admin() {
       boxShadow="md"
       mt="10"
     >
-      <Button onClick={() => TestFilterDiff()}>
-        Test filtering data from CMS and uploading CSV
-      </Button>
       <Tabs w="100%" minH="350px" p="2">
         <TabList>
           <Tab fontSize="xl">DownLoad</Tab>
@@ -135,11 +136,25 @@ export default function Admin() {
             </Box>
           </TabPanel>
           <TabPanel>
-            {newMatts ? (
-              <Button onClick={updateMatts}>Send Updates</Button>
-            ) : (
+            <Flex
+              pt="10"
+              flexDirection="column"
+              justifyContent="space-between"
+              h="100%"
+              minH="250px"
+            >
               <FileUploader handleFile={fileUpload} />
-            )}
+
+              <Button
+                size="lg"
+                colorScheme="blue"
+                onClick={updateMatts}
+                disabled={newMatts === null ? true : false}
+                leftIcon={<RepeatIcon />}
+              >
+                Send Updates
+              </Button>
+            </Flex>
           </TabPanel>
         </TabPanels>
       </Tabs>

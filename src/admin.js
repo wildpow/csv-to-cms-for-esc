@@ -143,7 +143,7 @@ export default function Admin() {
               h="100%"
               minH="250px"
             >
-              <FileUploader handleFile={fileUpload} />
+              <FileUploader handleFile={setNewMatts} />
 
               <Button
                 size="lg"

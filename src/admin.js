@@ -12,16 +12,11 @@ import {
   Flex,
 } from "@chakra-ui/react";
 
-import {
-  DownloadIcon,
-  RepeatIcon,
-  CloseIcon,
-  Search2Icon,
-} from "@chakra-ui/icons";
+import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
 import { SiteClient } from "datocms-client";
 import FileUploader from "./components/fileUploader";
 import { downloadMatts } from "./downloadData";
-import PapaParse from "papaparse";
+// import PapaParse from "papaparse";
 const client = new SiteClient(process.env.REACT_APP_DATO);
 
 export default function Admin() {
@@ -42,11 +37,13 @@ export default function Admin() {
       });
     let stuff = [];
     records.forEach((element) => {
-      stuff.push({
-        id: element.id,
-        name: element.name,
-        saleBanner: element.saleBanner,
-      });
+      if (element.id.length > 1) {
+        stuff.push({
+          id: element.id,
+          name: element.name,
+          saleBanner: element.saleBanner,
+        });
+      }
     });
     toast({
       title: "Products Generated",
@@ -57,18 +54,7 @@ export default function Admin() {
     });
     setMatts(stuff);
   }
-  const fileUpload = (file) => {
-    if (file) {
-      let reader = new FileReader();
-      reader.onload = function (event) {
-        const csvData = PapaParse.parse(reader.result, { header: true });
-        setNewMatts(csvData.data);
-      };
-      reader.readAsText(file);
-    } else {
-      setNewMatts(null);
-    }
-  };
+
   const updateMatts = () => {
     newMatts.forEach((matt) => {
       client.items
@@ -85,7 +71,7 @@ export default function Admin() {
           console.log(error);
         });
     });
-    console.log(newMatts);
+    // console.log(newMatts);
   };
 
   return (
@@ -111,7 +97,6 @@ export default function Admin() {
                   size="lg"
                   variant="outline"
                   onClick={() => {
-                    console.log(matts);
                     downloadMatts(
                       { id: "ID", name: "Name", saleBanner: "Sale Banner" },
                       [...matts],

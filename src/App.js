@@ -6,7 +6,15 @@ import {
   useLocation,
   Route,
 } from "react-router-dom";
-import { Box, Flex, Center, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Center,
+  Button,
+  Container,
+  Heading,
+} from "@chakra-ui/react";
+import { ArrowDownIcon } from "@chakra-ui/icons";
 import { useAuth } from "./authCTX";
 import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
 import Admin from "./admin";
@@ -73,9 +81,30 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <p>You must log in to view the page at {from.pathname}</p>
-      <button onClick={login}>Log in</button>
-    </div>
+    <Container
+      maxW="xl"
+      centerContent
+      border="1px"
+      borderColor="gray.300"
+      borderRadius="base"
+      boxShadow="md"
+      mt="10"
+    >
+      <Box w="100%" minH="350px" p="2" h="100%">
+        <Flex
+          pt="10"
+          flexDirection="column"
+          justifyContent="space-between"
+          h="100%"
+          minH="250px"
+        >
+          <Heading alignSelf="center">Please Login.</Heading>
+          <ArrowDownIcon alignSelf="center" w="100px" h="100px" />
+          <Button onClick={login} size="lg" variant="solid" colorScheme="blue">
+            Log in
+          </Button>
+        </Flex>
+      </Box>
+    </Container>
   );
 }

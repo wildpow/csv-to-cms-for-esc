@@ -33,7 +33,7 @@ export const AuthMessage = () => {
   let auth = useAuth();
   return (
     <Text color="white">
-      {auth.user ? `Welcome ${auth.user}` : "You are not logged in."}
+      {auth.user ? auth.user : "You are not logged in."}
     </Text>
   );
 };

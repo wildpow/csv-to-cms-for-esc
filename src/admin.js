@@ -8,55 +8,22 @@ import {
   TabPanels,
   TabPanel,
   Container,
-  useToast,
+  // useToast,
   Flex,
+  Stack,
 } from "@chakra-ui/react";
-
-import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
+import GetProducts from "./getProducts";
+import { RepeatIcon } from "@chakra-ui/icons";
 import { SiteClient } from "datocms-client";
 import FileUploader from "./components/fileUploader";
-import { downloadMatts } from "./downloadData";
 // import PapaParse from "papaparse";
 const client = new SiteClient(process.env.REACT_APP_DATO);
 
 export default function Admin() {
-  const toast = useToast();
-  const [matts, setMatts] = useState(null);
-  const [loadingMatt, setLoadingMatts] = useState(false);
-  const [newMatts, setNewMatts] = useState(null);
-  async function getMatts() {
-    setLoadingMatts(true);
-    const records = await client.items
-      .all({
-        "page[limit]": 100,
-        "filter[type]": "365476",
-      })
-      .then((res) => {
-        setLoadingMatts(false);
-        return res;
-      });
-    let stuff = [];
-    records.forEach((element) => {
-      if (element.id.length > 1) {
-        stuff.push({
-          id: element.id,
-          name: element.name,
-          saleBanner: element.saleBanner,
-        });
-      }
-    });
-    toast({
-      title: "Products Generated",
-      description: "Updated list of proucts have been created. Please Download",
-      status: "success",
-      duration: 6000,
-      isClosable: true,
-    });
-    setMatts(stuff);
-  }
-
+  // const toast = useToast();
+  const [newProducts, setNewProducts] = useState(null);
   const updateMatts = () => {
-    newMatts.forEach((matt) => {
+    newProducts.forEach((matt) => {
       client.items
         .update(matt.ID, {
           saleBanner: matt["Sale Banner"],
@@ -92,32 +59,18 @@ export default function Admin() {
         <TabPanels>
           <TabPanel>
             <Box padding="4" maxW="3xl">
-              {matts ? (
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => {
-                    downloadMatts(
-                      { id: "ID", name: "Name", saleBanner: "Sale Banner" },
-                      [...matts],
-                      "matts"
-                    );
-                  }}
-                  leftIcon={<DownloadIcon />}
-                >
-                  Download Now
-                </Button>
-              ) : (
-                <Button
-                  leftIcon={<RepeatIcon />}
-                  isLoading={loadingMatt}
-                  onClick={() => getMatts()}
-                  loadingText="Loading..."
-                  size="lg"
-                >
-                  Get Mattresses
-                </Button>
-              )}
+              <Stack direction="column" spacing={5}>
+                <GetProducts
+                  type="Mattresses"
+                  productId="365476"
+                  client={client}
+                />
+                <GetProducts
+                  type="Accessories"
+                  productId="344107"
+                  client={client}
+                />
+              </Stack>
             </Box>
           </TabPanel>
           <TabPanel>
@@ -128,13 +81,13 @@ export default function Admin() {
               h="100%"
               minH="250px"
             >
-              <FileUploader handleFile={setNewMatts} />
+              <FileUploader handleFile={setNewProducts} />
 
               <Button
                 size="lg"
                 colorScheme="blue"
                 onClick={updateMatts}
-                disabled={newMatts === null ? true : false}
+                disabled={newProducts === null ? true : false}
                 leftIcon={<RepeatIcon />}
               >
                 Send Updates

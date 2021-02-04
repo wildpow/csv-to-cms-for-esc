@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, useToast } from "@chakra-ui/react";
-import { downloadMatts } from "./downloadData";
+import { downloadProducts } from "./downloadData";
 import { DownloadIcon, RepeatIcon } from "@chakra-ui/icons";
 GetProducts.propTypes = {
   client: PropTypes.instanceOf(Object).isRequired,
@@ -72,7 +72,7 @@ export default function GetProducts({ type, productId, client }) {
           size="lg"
           variant="outline"
           onClick={() => {
-            downloadMatts(
+            downloadProducts(
               {
                 id: "ID",
                 productType: "Type of Product",

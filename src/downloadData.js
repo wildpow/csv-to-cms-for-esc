@@ -1,4 +1,4 @@
-export const downloadMatts = (headers, items, fileTitle) => {
+export const downloadProducts = (headers, items, fileTitle) => {
   function convertToCSV(objArray) {
     const array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
     let str = "";

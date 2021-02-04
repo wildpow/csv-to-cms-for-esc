@@ -8,6 +8,7 @@ import {
   TabPanels,
   TabPanel,
   Container,
+  Spinner,
   // useToast,
   Flex,
   Stack,
@@ -22,11 +23,13 @@ const client = new SiteClient(process.env.REACT_APP_DATO);
 export default function Admin() {
   // const toast = useToast();
   const [newProducts, setNewProducts] = useState(null);
-  const updateMatts = () => {
-    newProducts.forEach((matt) => {
+  const [loading, setLoading] = useState(false);
+  const updateProducts = () => {
+    setLoading(true);
+    newProducts.map((product) => {
       client.items
-        .update(matt.ID, {
-          saleBanner: matt["Sale Banner"],
+        .update(product.ID, {
+          saleBanner: product["Sale Banner"],
         })
         .then((item) => {
           client.items
@@ -37,8 +40,8 @@ export default function Admin() {
         .catch((error) => {
           console.log(error);
         });
+      return true;
     });
-    // console.log(newMatts);
   };
 
   return (
@@ -74,25 +77,44 @@ export default function Admin() {
             </Box>
           </TabPanel>
           <TabPanel>
-            <Flex
-              pt="10"
-              flexDirection="column"
-              justifyContent="space-between"
-              h="100%"
-              minH="250px"
-            >
-              <FileUploader handleFile={setNewProducts} />
-
-              <Button
-                size="lg"
-                colorScheme="blue"
-                onClick={updateMatts}
-                disabled={newProducts === null ? true : false}
-                leftIcon={<RepeatIcon />}
+            {loading ? (
+              <Flex
+                pt="10"
+                flexDirection="column"
+                justifyContent="center"
+                h="100%"
+                alignItems="center"
+                minH="250px"
               >
-                Send Updates
-              </Button>
-            </Flex>
+                <Spinner
+                  w="150px"
+                  h="150px"
+                  thickness="12px"
+                  speed="0.95s"
+                  color="blue.500"
+                />
+              </Flex>
+            ) : (
+              <Flex
+                pt="10"
+                flexDirection="column"
+                justifyContent="space-between"
+                h="100%"
+                minH="250px"
+              >
+                <FileUploader handleFile={setNewProducts} />
+
+                <Button
+                  size="lg"
+                  colorScheme="blue"
+                  onClick={updateProducts}
+                  disabled={newProducts === null ? true : false}
+                  leftIcon={<RepeatIcon />}
+                >
+                  Send Updates
+                </Button>
+              </Flex>
+            )}
           </TabPanel>
         </TabPanels>
       </Tabs>

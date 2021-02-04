@@ -9,7 +9,7 @@ import {
   TabPanel,
   Container,
   Spinner,
-  // useToast,
+  useToast,
   Flex,
   Stack,
 } from "@chakra-ui/react";
@@ -21,12 +21,27 @@ import FileUploader from "./components/fileUploader";
 const client = new SiteClient(process.env.REACT_APP_DATO);
 
 export default function Admin() {
-  // const toast = useToast();
+  const toast = useToast();
   const [newProducts, setNewProducts] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const updateProducts = () => {
     setLoading(true);
-    newProducts.map((product) => {
+    Promise.all(newProducts.map((p) => apiCall(p))).then(() => {
+      toast({
+        title: "Products Updated",
+        description:
+          "Updating products is complete. You can trigger a build now if you would like.",
+        status: "success",
+        duration: 6000,
+        isClosable: true,
+      });
+      setNewProducts(null);
+      setLoading(false);
+    });
+  };
+  const apiCall = (product) =>
+    new Promise((resolve, reject) => {
       client.items
         .update(product.ID, {
           saleBanner: product["Sale Banner"],
@@ -34,15 +49,16 @@ export default function Admin() {
         .then((item) => {
           client.items
             .publish(item.id)
-            .then((item) => console.log(item))
+            .then((item) => {
+              console.log(item);
+              resolve(item);
+            })
             .catch((error) => console.log(error));
         })
         .catch((error) => {
           console.log(error);
         });
-      return true;
     });
-  };
 
   return (
     <Container

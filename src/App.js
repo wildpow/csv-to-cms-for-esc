@@ -11,15 +11,21 @@ import {
   Flex,
   Center,
   Button,
+  HStack,
   Container,
   Heading,
+  useColorMode,
+  Icon,
 } from "@chakra-ui/react";
 import { ArrowDownIcon } from "@chakra-ui/icons";
 import { useAuth } from "./authCTX";
+import { ReactComponent as Sun } from "./sun-solid.svg";
+import { ReactComponent as Moon } from "./moon-solid.svg";
 import { PrivateRoute, AuthButton, AuthMessage } from "./components/auth";
 import Admin from "./admin";
 
 export default function App() {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <Router>
       <div>
@@ -47,7 +53,12 @@ export default function App() {
               <h1>CSV to CMS</h1>
             </Button>
             <AuthMessage />
-            <AuthButton />
+            <HStack spacing={4}>
+              <Button onClick={toggleColorMode}>
+                {colorMode === "light" ? <Icon as={Moon} /> : <Icon as={Sun} />}
+              </Button>
+              <AuthButton />
+            </HStack>
           </Flex>
         </Box>
         <Box maxW="1200px" m="0 auto" pt="20px">

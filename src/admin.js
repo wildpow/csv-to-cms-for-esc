@@ -24,7 +24,8 @@ export default function Admin() {
   const toast = useToast();
   const [newProducts, setNewProducts] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [buildTrigger, setBuildTrigger] = useState(false);
+  const [updateSent, setUpdateSent] = useState(false);
   const updateProducts = () => {
     setLoading(true);
     Promise.all(newProducts.map((p) => apiCall(p))).then(() => {
@@ -38,7 +39,13 @@ export default function Admin() {
       });
       setNewProducts(null);
       setLoading(false);
+      setUpdateSent(true);
     });
+  };
+  const handleFile = (data) => {
+    setUpdateSent(false);
+    setBuildTrigger(false);
+    setNewProducts(data);
   };
   const apiCall = (product) =>
     new Promise((resolve, reject) => {
@@ -59,7 +66,30 @@ export default function Admin() {
           console.log(error);
         });
     });
-
+  const triggerBuild = () => {
+    const requestOptions = {
+      method: "POST",
+      headers: {},
+      body: {},
+    };
+    setBuildTrigger(true);
+    fetch(
+      "https://api.netlify.com/build_hooks/5d914e80eb12d74fe8f06d95",
+      requestOptions
+    )
+      .then((res) => console.log(res))
+      .then(() => {
+        toast({
+          title: "Build Requested",
+          description:
+            "Build has been triggered. Average time to complete build is about 3 minutes",
+          status: "success",
+          duration: 6000,
+          isClosable: true,
+        });
+        setBuildTrigger(true);
+      });
+  };
   return (
     <Container
       maxW="xl"
@@ -118,17 +148,25 @@ export default function Admin() {
                 h="100%"
                 minH="250px"
               >
-                <FileUploader handleFile={setNewProducts} />
-
-                <Button
-                  size="lg"
-                  colorScheme="blue"
-                  onClick={updateProducts}
-                  disabled={newProducts === null ? true : false}
-                  leftIcon={<RepeatIcon />}
-                >
-                  Send Updates
-                </Button>
+                <FileUploader handleFile={handleFile} />
+                {updateSent ? (
+                  <Button
+                    disabled={buildTrigger}
+                    onClick={() => triggerBuild()}
+                  >
+                    {buildTrigger ? "Build Sent" : "Trigger Build"}
+                  </Button>
+                ) : (
+                  <Button
+                    size="lg"
+                    colorScheme="blue"
+                    onClick={updateProducts}
+                    disabled={newProducts === null ? true : false}
+                    leftIcon={<RepeatIcon />}
+                  >
+                    Send Updates
+                  </Button>
+                )}
               </Flex>
             )}
           </TabPanel>

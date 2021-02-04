@@ -42,6 +42,7 @@ export default function GetProducts({ type, productId, client }) {
     setLoading(true);
     const records = await client.items
       .all({
+        "page[limit]": 200,
         filter: {
           type: productId,
         },

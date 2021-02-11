@@ -19,7 +19,7 @@ export const AuthButton = () => {
       _hover={{ color: "gray.900", bg: "white" }}
       variant="outline"
       onClick={() => {
-        auth.signout(() => history.push("/login"));
+        auth.signout(() => history.push("/"));
       }}
     >
       Sign out
@@ -37,33 +37,20 @@ export const AuthMessage = () => {
     </Text>
   );
 };
-export const PrivateRoute = ({ component: Component, loggedIn, ...rest }) => {
+export const PrivateRoute = ({ component: Component, ...rest }) => {
   let auth = useAuth();
-  if (loggedIn) {
+  if (!auth.isLoading) {
     return (
       <>
-        {auth.isLoading === false && (
-          <Route
-            {...rest}
-            render={(props) =>
-              auth.user ? <Redirect to="/" /> : <Component {...props} />
-            }
-          />
-        )}
+        <Route
+          {...rest}
+          render={(props) =>
+            auth.user ? <Component {...props} /> : <Redirect to="/" />
+          }
+        />
       </>
     );
   } else {
-    return (
-      <>
-        {!auth.isLoading && (
-          <Route
-            {...rest}
-            render={(props) =>
-              auth.user ? <Component {...props} /> : <Redirect to="/login" />
-            }
-          />
-        )}
-      </>
-    );
+    return <div>loading</div>;
   }
 };

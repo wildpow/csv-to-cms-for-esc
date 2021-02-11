@@ -64,9 +64,9 @@ export default function App() {
         <Box maxW="1200px" m="0 auto" pt="20px">
           <Center>
             <Switch>
-              <PrivateRoute path="/" component={Admin} exact />
-              <PrivateRoute loggedIn path="/login" component={LoginPage} />
-              <Route component={ErrorPage} />
+              <Route path="/" component={RootPage} exact />
+              <PrivateRoute path="/admin" component={Admin} exact />
+              <Route component={RootPage} />
             </Switch>
           </Center>
         </Box>
@@ -74,13 +74,74 @@ export default function App() {
     </Router>
   );
 }
-function ErrorPage() {
-  return <h1>Error Page not working</h1>;
-}
-
-function LoginPage() {
+// function ErrorPage() {
+//   return <h1>Error Page not working</h1>;
+// }
+function RootPage() {
   let history = useHistory();
+  let auth = useAuth();
+  let login = () => {
+    auth.signin(() => {
+      history.push("/admin");
+      history.replace("/admin");
+    });
+  };
+  return (
+    <Container
+      maxW="xl"
+      centerContent
+      border="1px"
+      borderColor="gray.300"
+      borderRadius="base"
+      boxShadow="md"
+      mt="10"
+    >
+      <Box w="100%" minH="350px" p="2" h="100%">
+        <Flex
+          pt="10"
+          flexDirection="column"
+          justifyContent="space-between"
+          h="100%"
+          minH="250px"
+        >
+          {auth.user ? (
+            <>
+              <Heading alignSelf="center" textAlign="center">
+                {`Welcome ${auth.user}`}{" "}
+              </Heading>
+              <ArrowDownIcon alignSelf="center" w="100px" h="100px" />
+              <Button
+                size="lg"
+                variant="solid"
+                colorScheme="blue"
+                as={RouterLink}
+                to="/admin"
+              >
+                Go to Admin
+              </Button>
+            </>
+          ) : (
+            <>
+              <Heading alignSelf="center">Please Login.</Heading>
+              <ArrowDownIcon alignSelf="center" w="100px" h="100px" />
+              <Button
+                onClick={login}
+                size="lg"
+                variant="solid"
+                colorScheme="blue"
+              >
+                Log in
+              </Button>
+            </>
+          )}
+        </Flex>
+      </Box>
+    </Container>
+  );
+}
+function LoginPage() {
   let location = useLocation();
+  let history = useHistory();
   let auth = useAuth();
 
   let { from } = location.state || { from: { pathname: "/" } };

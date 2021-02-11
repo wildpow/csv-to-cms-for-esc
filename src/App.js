@@ -3,7 +3,7 @@ import {
   Switch,
   Link as RouterLink,
   useHistory,
-  useLocation,
+  // useLocation,
   Route,
 } from "react-router-dom";
 import {
@@ -139,44 +139,44 @@ function RootPage() {
     </Container>
   );
 }
-function LoginPage() {
-  let location = useLocation();
-  let history = useHistory();
-  let auth = useAuth();
+// function LoginPage() {
+//   let location = useLocation();
+//   let history = useHistory();
+//   let auth = useAuth();
 
-  let { from } = location.state || { from: { pathname: "/" } };
-  let login = () => {
-    auth.signin(() => {
-      history.replace(from);
-      history.push(from);
-    });
-  };
+//   let { from } = location.state || { from: { pathname: "/" } };
+//   let login = () => {
+//     auth.signin(() => {
+//       history.replace(from);
+//       history.push(from);
+//     });
+//   };
 
-  return (
-    <Container
-      maxW="xl"
-      centerContent
-      border="1px"
-      borderColor="gray.300"
-      borderRadius="base"
-      boxShadow="md"
-      mt="10"
-    >
-      <Box w="100%" minH="350px" p="2" h="100%">
-        <Flex
-          pt="10"
-          flexDirection="column"
-          justifyContent="space-between"
-          h="100%"
-          minH="250px"
-        >
-          <Heading alignSelf="center">Please Login.</Heading>
-          <ArrowDownIcon alignSelf="center" w="100px" h="100px" />
-          <Button onClick={login} size="lg" variant="solid" colorScheme="blue">
-            Log in
-          </Button>
-        </Flex>
-      </Box>
-    </Container>
-  );
-}
+//   return (
+//     <Container
+//       maxW="xl"
+//       centerContent
+//       border="1px"
+//       borderColor="gray.300"
+//       borderRadius="base"
+//       boxShadow="md"
+//       mt="10"
+//     >
+//       <Box w="100%" minH="350px" p="2" h="100%">
+//         <Flex
+//           pt="10"
+//           flexDirection="column"
+//           justifyContent="space-between"
+//           h="100%"
+//           minH="250px"
+//         >
+//           <Heading alignSelf="center">Please Login.</Heading>
+//           <ArrowDownIcon alignSelf="center" w="100px" h="100px" />
+//           <Button onClick={login} size="lg" variant="solid" colorScheme="blue">
+//             Log in
+//           </Button>
+//         </Flex>
+//       </Box>
+//     </Container>
+//   );
+// }

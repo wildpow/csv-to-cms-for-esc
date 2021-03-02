@@ -19,26 +19,33 @@ export default function FileUploader({ handleFile }) {
   const handleChange = (event) => {
     if (event.target.files[0] !== undefined) {
       const fileUploaded = event.target.files[0];
-      console.log(event.target.files[0]);
       let reader = new FileReader();
       reader.onload = function (event) {
         const csvData = PapaParse.parse(reader.result, { header: true });
-        let errors = 0;
-        csvData.data.forEach((element) => {
-          if (element.ID || element.Name || element["Sale Banner"]) {
-            errors += 1;
+        let errors = [];
+        let filteredData = csvData.data.filter(
+          (p) =>
+            p.hasOwnProperty("ID") &&
+            p.hasOwnProperty("Name") &&
+            p.hasOwnProperty("Sale Banner")
+        );
+        filteredData.forEach((d) => {
+          if (d.ID.length === 0) {
+            errors.push(d);
           }
         });
-        if (errors > 0) {
-          handleFile(csvData.data);
+        if (errors.length === 0) {
+          handleFile(filteredData);
           setFileName(fileUploaded.name);
         } else {
           toast({
             title: "Problem loading CSV",
-            description:
-              "Uploaded CSV is missing one of the required rows. (ID, NAME, SALE BANNER)",
+            description: `${
+              errors.length > 0 ? "A proudct has" : "Multiple products have"
+            } empty 'ID' field. 
+            [${errors.map((e) => ` ${e.Name} `)}]`,
             status: "error",
-            duration: 6000,
+            duration: 9000,
             isClosable: true,
           });
         }
